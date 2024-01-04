@@ -4,23 +4,30 @@
 
 from PIL import Image
 
+
 def MesajGizle(yollananGoruntu, msj):
     gizlenecekDegerler = ""
-
+    msj += "\x00"
     byteDizisi = msj.encode('utf-8')  # Metni bir byte dizisine çevir
 
-    gizlenecekDegerler += format(byteDizisi[0], '08b')  # 1. karakteri 8 bit olarak ekle
-    gizlenecekDegerler += format(byteDizisi[1], '08b')  # 2. karakteri 8 bit olarak ekle
-    gizlenecekDegerler += format(byteDizisi[2], '08b')  # 3. karakteri 8 bit olarak ekle
+    if len(byteDizisi) > yollananGoruntu.width * yollananGoruntu.height:
+        print("Gizlenecek mesaj örtü nesnesinden daha büyük!")
+        return
 
+    for i in range(len(byteDizisi)):
+        gizlenecekDegerler += format(byteDizisi[i], '08b')
+
+    print("Gizlenecek mesajın bit dizisi:", gizlenecekDegerler)
     gizlenenAdeti = 0
     for i in range(yollananGoruntu.width):
         for j in range(yollananGoruntu.height):
             R, G, B = yollananGoruntu.getpixel((i, j))
 
             gizlenecekBit_1 = gizlenecekDegerler[gizlenenAdeti] if gizlenenAdeti < len(gizlenecekDegerler) else ""
-            gizlenecekBit_2 = gizlenecekDegerler[gizlenenAdeti + 1] if gizlenenAdeti + 1 < len(gizlenecekDegerler) else ""
-            gizlenecekBit_3 = gizlenecekDegerler[gizlenenAdeti + 2] if gizlenenAdeti + 2 < len(gizlenecekDegerler) else ""
+            gizlenecekBit_2 = gizlenecekDegerler[gizlenenAdeti + 1] if gizlenenAdeti + 1 < len(
+                gizlenecekDegerler) else ""
+            gizlenecekBit_3 = gizlenecekDegerler[gizlenenAdeti + 2] if gizlenenAdeti + 2 < len(
+                gizlenecekDegerler) else ""
 
             binary_R = format(R, '08b')
             binary_G = format(G, '08b')
@@ -37,17 +44,20 @@ def MesajGizle(yollananGoruntu, msj):
             yollananGoruntu.putpixel((i, j), (R, G, B))
 
             gizlenenAdeti += 3
-            if gizlenenAdeti >= 24:  # 24 bit mesaj gizlendiğinde çık
+            if len(byteDizisi) == gizlenenAdeti:
                 break
-        if gizlenenAdeti >= 24:
+        if len(byteDizisi) == gizlenenAdeti:
             break
 
     yollananGoruntu.save('images/baboon_hide_message.png')
 
     return yollananGoruntu
 
+
 # Görüntüyü yükle
 image = Image.open('images/baboon.png')
 
 # Mesaj gizleme işlemi
-new_image = MesajGizle(image, "FAR")
+user_input = input("Gizlemek istediğiniz mesajı giriniz: ")
+print("Girilen mesaj:", user_input)
+new_image = MesajGizle(image, user_input)

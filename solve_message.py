@@ -16,15 +16,13 @@ def MesajCikar(yollananGoruntu):
             okunanBitler += format(B, '08b')[-1]
 
             okunamaAdeti += 3
-
-            if okunamaAdeti >= 24:
+            if okunamaAdeti >= 8 and okunanBitler[-8:] == "00000000":
                 break
-        if okunamaAdeti >= 24:
+        if okunamaAdeti >= 8 and okunanBitler[-8:] == "00000000":
             break
 
-    # 01010100 01010101 01010010
     byteDizisi = [int(okunanBitler[i:i + 8], 2) for i in range(0, len(okunanBitler), 8)]
-    okunanDegerler = bytes(byteDizisi).decode('utf-8')
+    okunanDegerler = bytes(byteDizisi).decode('utf-8').replace("\x00", "")
 
     return okunanDegerler
 
