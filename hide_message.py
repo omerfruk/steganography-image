@@ -10,14 +10,13 @@ def MesajGizle(yollananGoruntu, msj):
     msj += "\x00"
     byteDizisi = msj.encode('utf-8')  # Metni bir byte dizisine çevir
 
-    if len(byteDizisi) > yollananGoruntu.width * yollananGoruntu.height:
-        print("Gizlenecek mesaj örtü nesnesinden daha büyük!")
-        return
-
     for i in range(len(byteDizisi)):
         gizlenecekDegerler += format(byteDizisi[i], '08b')
 
-    print("Gizlenecek mesajın bit dizisi:", gizlenecekDegerler)
+    if len(gizlenecekDegerler) + 8 > yollananGoruntu.width * yollananGoruntu.height:
+        print("Gizlenecek mesaj örtü nesnesinden daha büyük!")
+        return
+
     gizlenenAdeti = 0
     for i in range(yollananGoruntu.width):
         for j in range(yollananGoruntu.height):

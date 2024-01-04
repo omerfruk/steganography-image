@@ -16,9 +16,9 @@ def MesajCikar(yollananGoruntu):
             okunanBitler += format(B, '08b')[-1]
 
             okunamaAdeti += 3
-            if okunamaAdeti >= 8 and okunanBitler[-8:] == "00000000":
+            if okunamaAdeti >= 12 and (okunanBitler[-8:] == "00000000" or okunanBitler[-9:-1] == "00000000" or okunanBitler[-10:-2] == "00000000"):
                 break
-        if okunamaAdeti >= 8 and okunanBitler[-8:] == "00000000":
+        if okunamaAdeti >= 12 and (okunanBitler[-8:] == "00000000" or okunanBitler[-9:-1] == "00000000" or okunanBitler[-10:-2] == "00000000"):
             break
 
     byteDizisi = [int(okunanBitler[i:i + 8], 2) for i in range(0, len(okunanBitler), 8)]
